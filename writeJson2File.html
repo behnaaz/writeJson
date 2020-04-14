@@ -3,8 +3,26 @@
 
 <html>
 <head>
-<script>
+<script type="text/javascript">
 function export2file() {
+  var bucketName = "BUCKET_NAME";
+  var myKey = "?";
+  var bucketRegion = "REGION";
+  var IdentityPoolId = "IDENTITY_POOL_ID";
+
+  AWS.config.update({
+    region: bucketRegion,
+    credentials: new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: IdentityPoolId
+   })
+  });
+
+  var s3 = new AWS.S3({
+    apiVersion: "2006-03-01",
+    params: { Bucket: bucketName }
+  });
+  
+  
   const originalData = {
     members: [{
         field1: "تست",
@@ -21,15 +39,31 @@ function export2file() {
     ]
   };
 
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(originalData, null, 2)], {
-    type: "application/json;charset=utf-8;"
-  }));
-  a.setAttribute("download", "mydata.json");
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  // Use S3 ManagedUpload class as it supports multipart uploads
+  var upload = new AWS.S3.ManagedUpload({
+    params: {
+      Bucket: bucketName,
+      Key: myKey,
+      Body: JSON.stringify(originalData),
+      ACL: "public-read"
+    }
+  });
+
+  var promise = upload.promise();
+
+  promise.then(
+    function(data) {
+      alert("Successfully uploaded photo.");
+    },
+    function(err) {
+      return alert("There was an error uploading your photo: ", err.message);
+    }
+  );
 }
+  
+  window.addEventListener('load', function() {
+    alert('All assets loaded')
+});
 </script>
 </head>
 <body>
