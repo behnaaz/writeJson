@@ -1,0 +1,38 @@
+
+
+
+<html>
+<head>
+<script>
+function export2file() {
+  const originalData = {
+    members: [{
+        field1: "تست",
+        field2: "34"
+      },
+      {
+        field1: "test2",
+        field2: "42"
+      },
+      {
+        field1: "test3",
+        field2: "12"
+      }
+    ]
+  };
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(originalData, null, 2)], {
+    type: "application/json;charset=utf-8;"
+  }));
+  a.setAttribute("download", "mydata.json");
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+</script>
+</head>
+<body>
+<button onclick="export2file()">Export data to local file</button>
+</body>
+</html>
