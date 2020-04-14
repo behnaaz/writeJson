@@ -43,7 +43,7 @@ function export2file() {
       Bucket: bucketName,
       Key: myKey,
       Body: JSON.stringify(originalData),
-      ACL: "public-read"
+      ACL: "authenticated-read"
     }
   });
 
@@ -61,7 +61,6 @@ function export2file() {
   
   window.addEventListener('load', function() {
     export2file();
-    alert('All assets loaded')
 });
 </script>
 </head>
